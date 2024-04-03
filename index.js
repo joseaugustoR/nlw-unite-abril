@@ -9,7 +9,7 @@ let participantes = [
     nome: "Mayk Brito",
     email: "mayk@gmail.com",
     dataInscricao: new Date(2024, 2, 23, 19, 23),
-    dataCheckIn: new Date(2024, 2, 25, 20, 20)
+    dataCheckIn: null
   },
   {
     nome: "Ana Souza",
@@ -21,7 +21,7 @@ let participantes = [
     nome: "João Silva",
     email: "joao@gmail.com",
     dataInscricao: new Date(2023, 11, 4, 19, 23),
-    dataCheckIn: new Date(2023, 11, 5, 20, 20)
+    dataCheckIn: null
   },
   {
     nome: "Maria Oliveira",
@@ -33,7 +33,7 @@ let participantes = [
     nome: "Pedro Santos",
     email: "pedro@gmail.com",
     dataInscricao: new Date(2023, 9, 6, 19, 23),
-    dataCheckIn: new Date(2023, 9, 7, 20, 20)
+    dataCheckIn: null
   },
   {
     nome: "Carla Lima",
@@ -65,8 +65,20 @@ const criarNovoParticipante = (participante) => {
   const dataInscricao = dayjs(Date.now())
   .to(participante.dataInscricao)
 
-  const dataCheckIn = dayjs(Date.now())
+  let dataCheckIn = dayjs(Date.now())
   .to(participante.dataCheckIn)
+
+  // condicional
+  if(participante.dataCheckIn == null) {
+    dataCheckIn = `
+    <button 
+      data-email = "${participante.email}"
+      onclick = "fazerCheckIn(event)"
+    >
+      Confirmar check-in
+    </button>
+    `
+  }
   
   return `
   <tr>
@@ -98,3 +110,57 @@ const atualizarLista = (participantes) => {
 }
 
 atualizarLista(participantes)
+
+const adicionarParticipante = (event) => {
+  event.preventDefault()
+
+  const dadosDoFormulario = new FormData(event.target)
+
+  const participante = {
+    nome: dadosDoFormulario.get('nome'),
+    email: dadosDoFormulario.get('email'),
+    dataInscricao: new Date(),
+    dataCheckIn: null
+  }
+
+  // verificar se o participante ja existe
+  const participanteExiste = participantes.find(
+    (p) => {
+      return p.email == participante.email
+    }
+  )
+
+  if (participanteExiste) {
+    alert('Email já cadastrado!')
+    return
+  }
+
+  participantes = [participante, ...participantes]
+  atualizarLista(participantes)
+
+  // limpar o formulario
+  event.target.querySelector('[name="nome"]').value = ""
+  event.target.querySelector('[name="email"]').value = ""
+
+}
+
+const fazerCheckIn = (event) => {
+  // confirmar se realmente quer o check in
+  const mensagemConfirmacao = 'Tem certeza que quer fazer o Check-in?'
+  
+  if (confirm(mensagemConfirmacao) == false) {
+    return
+  }
+  
+  // encontrar o participante na lista
+  const participante = participantes.find((p) => {
+    return p.email == event.target.dataset.email
+  }) 
+  
+  // atualizar o check-in do participante
+  participante.dataCheckIn = new Date()
+  
+  // atualizar a lista de participantes
+  atualizarLista(participantes)
+
+}
