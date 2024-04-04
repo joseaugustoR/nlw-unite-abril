@@ -21,19 +21,19 @@ let participantes = [
     nome: "João Silva",
     email: "joao@gmail.com",
     dataInscricao: new Date(2023, 11, 4, 19, 23),
-    dataCheckIn: null
+    dataCheckIn: new Date(2023, 11, 5, 20, 20)
   },
   {
     nome: "Maria Oliveira",
     email: "maria@gmail.com",
     dataInscricao: new Date(2023, 10, 5, 19, 23),
-    dataCheckIn: new Date(2023, 10, 6, 20, 20)
+    dataCheckIn: null
   },
   {
     nome: "Pedro Santos",
     email: "pedro@gmail.com",
     dataInscricao: new Date(2023, 9, 6, 19, 23),
-    dataCheckIn: null
+    dataCheckIn: new Date(2023, 9, 7, 20, 20)
   },
   {
     nome: "Carla Lima",
@@ -51,13 +51,13 @@ let participantes = [
     nome: "Paula Costa",
     email: "paula@gmail.com",
     dataInscricao: new Date(2023, 6, 9, 19, 23),
-    dataCheckIn: new Date(2023, 6, 10, 20, 20)
+    dataCheckIn: null
   },
   {
     nome: "Gabriel Almeida",
     email: "gabriel@gmail.com",
     dataInscricao: new Date(2023, 5, 10, 19, 23),
-    dataCheckIn: new Date(2023, 5, 11, 20, 20)
+    dataCheckIn: null
   }
 ];
 
@@ -71,12 +71,12 @@ const criarNovoParticipante = (participante) => {
   // condicional
   if(participante.dataCheckIn == null) {
     dataCheckIn = `
-    <button 
-      data-email = "${participante.email}"
-      onclick = "fazerCheckIn(event)"
-    >
-      Confirmar check-in
-    </button>
+      <button
+        data-email="${participante.email}"
+        onclick="fazerCheckIn(event)"
+      >
+        Confirmar check-in
+      </button>
     `
   }
   
@@ -123,14 +123,12 @@ const adicionarParticipante = (event) => {
     dataCheckIn: null
   }
 
-  // verificar se o participante ja existe
+  // verificar se o particpante já existe
   const participanteExiste = participantes.find(
-    (p) => {
-      return p.email == participante.email
-    }
+    (p) => p.email == participante.email
   )
 
-  if (participanteExiste) {
+  if(participanteExiste) {
     alert('Email já cadastrado!')
     return
   }
@@ -141,26 +139,24 @@ const adicionarParticipante = (event) => {
   // limpar o formulario
   event.target.querySelector('[name="nome"]').value = ""
   event.target.querySelector('[name="email"]').value = ""
-
 }
 
 const fazerCheckIn = (event) => {
-  // confirmar se realmente quer o check in
-  const mensagemConfirmacao = 'Tem certeza que quer fazer o Check-in?'
-  
-  if (confirm(mensagemConfirmacao) == false) {
+  // confirmar se realmente quer o check-in
+  const mensagemConfirmacao = 'Tem certeza que deseja fazer o check-in?' 
+
+  if(confirm(mensagemConfirmacao) == false) {
     return
   }
-  
-  // encontrar o participante na lista
-  const participante = participantes.find((p) => {
-    return p.email == event.target.dataset.email
-  }) 
+
+  // encontrar o participante dentro da lista
+  const participante = participantes.find(
+    (p) => p.email == event.target.dataset.email  
+  )
   
   // atualizar o check-in do participante
   participante.dataCheckIn = new Date()
-  
+
   // atualizar a lista de participantes
   atualizarLista(participantes)
-
 }
